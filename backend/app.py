@@ -12,12 +12,13 @@ from detect import run_object_detection  # ✅ YOLOv5 detection logic
 app = FastAPI()
 
 # ─────────────────────────────
-# Pydantic Schema for Response
+# Pydantic Schemas
 # ─────────────────────────────
 class DetectionOut(BaseModel):
     id: int
     filename: str
-    detections: List[Dict]  # JSON list
+    detections: List[Dict]
+    annotated_image: str
 
     class Config:
         orm_mode = True
@@ -27,20 +28,20 @@ class DetectionCreate(BaseModel):
     detections: Dict
 
 # ─────────────────────────────
-# Health Check Endpoint
+# Health Check
 # ─────────────────────────────
 @app.get("/")
 def read_root():
-    return {"status": "FastAPI is working"}
+    return {"status": "✅ FastAPI is working"}
 
 # ─────────────────────────────
-# Uploads Folder
+# Upload Folder Setup
 # ─────────────────────────────
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # ─────────────────────────────
-# Dependency: DB Session
+# DB Session Dependency
 # ─────────────────────────────
 def get_db():
     db = SessionLocal()
@@ -50,7 +51,7 @@ def get_db():
         db.close()
 
 # ─────────────────────────────
-# 1. Upload Image & Run Detection
+# 1. Upload Image + Run Detection + Save Annotated
 # ─────────────────────────────
 @app.post("/upload-image/", response_model=DetectionOut)
 async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db)):
@@ -64,14 +65,16 @@ async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_d
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
+    # Run detection and save annotated image
     try:
-        detections = run_object_detection(file_path)
+        detections, annotated_path = run_object_detection(file_path)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Detection failed: {e}")
 
     new_entry = Detection(
         filename=filename,
-        detections=detections
+        detections=detections,
+        annotated_image=annotated_path
     )
     db.add(new_entry)
     db.commit()
@@ -97,13 +100,14 @@ def get_detection_by_id(id: int, db: Session = Depends(get_db)):
     return detection
 
 # ─────────────────────────────
-# 4. Manually Add Detection (Optional)
+# 4. Optional: Manual Detection Entry
 # ─────────────────────────────
 @app.post("/detections/", response_model=DetectionOut)
 def create_detection(data: DetectionCreate, db: Session = Depends(get_db)):
     new_detection = Detection(
         filename=data.filename,
-        detections=data.detections
+        detections=data.detections,
+        annotated_image=f"uploads/predicted_{data.filename}"
     )
     db.add(new_detection)
     db.commit()
