@@ -20,6 +20,7 @@ class Detection(Base):
     id = Column(Integer, primary_key=True, index=True)
     filename = Column(String, nullable=False)
     detections = Column(JSON, nullable=False)  # JSON list of detected objects
+    annotated_image = Column(String, nullable=True)  # ✅ Path to image with bounding boxes
     timestamp = Column(DateTime, default=datetime.utcnow)
 
 # 5. Create the table in the database
