@@ -33,7 +33,7 @@ def get_db():
         db.close()
 
 # ─────────────────────────────
-# 1. Upload Image & Save to DB
+# 1. Upload Image & Save to DB (with mock detection)
 # ─────────────────────────────
 @app.post("/upload-image/")
 async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db)):
@@ -50,10 +50,16 @@ async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_d
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # Create DB entry (empty detections for now)
+    # Mock detection results
+    mock_detections = [
+        {"label": "person", "confidence": 0.98, "box": [50, 50, 150, 200]},
+        {"label": "dog", "confidence": 0.87, "box": [200, 80, 300, 220]}
+    ]
+
+    # Save to DB
     new_entry = Detection(
         filename=filename,
-        detections=[],  # Will update after detection model
+        detections=mock_detections
     )
     db.add(new_entry)
     db.commit()
@@ -63,7 +69,7 @@ async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_d
         "id": new_entry.id,
         "filename": new_entry.filename,
         "path": file_path,
-        "message": "✅ Image uploaded and saved"
+        "message": "Image uploaded with mock detections"
     }
 
 # ─────────────────────────────
