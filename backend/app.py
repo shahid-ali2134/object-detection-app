@@ -1,13 +1,30 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from typing import List, Dict
 import os
 import shutil
 from datetime import datetime
 
 from database import SessionLocal, Detection
+from detect import run_object_detection  # ✅ YOLOv5 detection logic
 
 app = FastAPI()
+
+# ─────────────────────────────
+# Pydantic Schema for Response
+# ─────────────────────────────
+class DetectionOut(BaseModel):
+    id: int
+    filename: str
+    detections: List[Dict]  # JSON list
+
+    class Config:
+        orm_mode = True
+
+class DetectionCreate(BaseModel):
+    filename: str
+    detections: Dict
 
 # ─────────────────────────────
 # Health Check Endpoint
@@ -17,13 +34,13 @@ def read_root():
     return {"status": "FastAPI is working"}
 
 # ─────────────────────────────
-# Utility: Uploads Folder
+# Uploads Folder
 # ─────────────────────────────
 UPLOAD_DIR = "uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)  # Ensure folder exists
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # ─────────────────────────────
-# Dependency to get DB Session
+# Dependency: DB Session
 # ─────────────────────────────
 def get_db():
     db = SessionLocal()
@@ -33,50 +50,46 @@ def get_db():
         db.close()
 
 # ─────────────────────────────
-# 1. Upload Image & Save to DB
+# 1. Upload Image & Run Detection
 # ─────────────────────────────
-@app.post("/upload-image/")
+@app.post("/upload-image/", response_model=DetectionOut)
 async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    # Validate file type
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Only image files are allowed.")
 
-    # Generate safe filename
     timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
     filename = f"{timestamp}_{file.filename}"
     file_path = os.path.join(UPLOAD_DIR, filename)
 
-    # Save file locally
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # Create DB entry (empty detections for now)
+    try:
+        detections = run_object_detection(file_path)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Detection failed: {e}")
+
     new_entry = Detection(
         filename=filename,
-        detections=[],  # Will update after detection model
+        detections=detections
     )
     db.add(new_entry)
     db.commit()
     db.refresh(new_entry)
 
-    return {
-        "id": new_entry.id,
-        "filename": new_entry.filename,
-        "path": file_path,
-        "message": "✅ Image uploaded and saved"
-    }
+    return new_entry
 
 # ─────────────────────────────
 # 2. Get All Detections
 # ─────────────────────────────
-@app.get("/detections/")
+@app.get("/detections/", response_model=List[DetectionOut])
 def get_all_detections(db: Session = Depends(get_db)):
     return db.query(Detection).all()
 
 # ─────────────────────────────
 # 3. Get Detection by ID
 # ─────────────────────────────
-@app.get("/detections/{id}/")
+@app.get("/detections/{id}/", response_model=DetectionOut)
 def get_detection_by_id(id: int, db: Session = Depends(get_db)):
     detection = db.query(Detection).filter(Detection.id == id).first()
     if not detection:
@@ -84,13 +97,9 @@ def get_detection_by_id(id: int, db: Session = Depends(get_db)):
     return detection
 
 # ─────────────────────────────
-# 4. (Optional) Manually Add Detection
+# 4. Manually Add Detection (Optional)
 # ─────────────────────────────
-class DetectionCreate(BaseModel):
-    filename: str
-    detections: dict
-
-@app.post("/detections/")
+@app.post("/detections/", response_model=DetectionOut)
 def create_detection(data: DetectionCreate, db: Session = Depends(get_db)):
     new_detection = Detection(
         filename=data.filename,
