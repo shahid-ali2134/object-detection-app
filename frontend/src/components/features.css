@@ -1,0 +1,15 @@
+.features {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px; margin: 22px 0 8px; position: relative; z-index: 1;
+}
+.feature-card {
+  background: #0d1726; border: 1px solid #122941; border-radius: 14px;
+  padding: 18px; text-align: center; transition: transform .15s ease, box-shadow .15s ease;
+}
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+.feature-icon { font-size: 22px; margin-bottom: 8px; }
+.feature-title { font-weight: 700; margin-bottom: 6px; }
+.feature-text { color: #9ab0c6; }

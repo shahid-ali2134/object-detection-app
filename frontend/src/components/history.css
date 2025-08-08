@@ -1,0 +1,13 @@
+.history { margin: 26px 0; position: relative; z-index: 1; }
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.card {
+  background: #0d1828; border: 1px solid #143456; border-radius: 12px; padding: 12px;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.25); }
+.thumb {
+  width: 100%; max-height: 220px; object-fit: contain; border-radius: 10px;
+  border: 1px solid #143456; margin-top: 8px;
+}
+.muted { color: #8ca4bf; }
+.small { font-size: 12px; }
