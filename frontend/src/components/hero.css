@@ -1,7 +1,6 @@
 .hero { position: relative; z-index: 1; padding-top: 28px; }
 .hero-wrap { text-align: center; }
 
-/* Row: badge + gradient title */
 .title-row {
   display: inline-flex;
   align-items: center;
@@ -16,7 +15,6 @@
 }
 .badge img { width: 28px; height: 28px; display: block; }
 
-/* pulsing glow */
 .pulse::after {
   content: "";
   position: absolute; inset: -6px;

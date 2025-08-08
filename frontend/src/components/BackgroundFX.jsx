@@ -41,9 +41,7 @@ export default function BackgroundFX() {
 
   return (
     <>
-      {/* animated gradient layer */}
       <div className="bgfx-gradient" aria-hidden />
-      {/* moving particles */}
       <canvas ref={canvasRef} className="bgfx-canvas" aria-hidden />
     </>
   );
