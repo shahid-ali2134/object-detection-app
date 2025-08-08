@@ -18,8 +18,10 @@ export default function ResultsPanel({ latest }) {
           <pre className="json">{JSON.stringify(latest.detections, null, 2)}</pre>
         </div>
         <div className="right">
-          <div className="muted">Annotated Image</div>
-          {latest.annotated_image && <img className="image" src={annotatedUrl} alt="annotated" />}
+          <div className="right-title">Annotated Image</div>
+          {latest.annotated_image && (
+            <img className="image" src={annotatedUrl} alt="annotated" />
+          )}
         </div>
       </div>
     </section>
