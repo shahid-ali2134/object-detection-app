@@ -1,3 +1,21 @@
+/* animated gradient behind everything */
+.bgfx-gradient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(600px 300px at 15% 10%, rgba(0, 190, 255, .16), transparent 60%),
+              radial-gradient(700px 350px at 80% 40%, rgba(0, 255, 160, .12), transparent 60%),
+              linear-gradient(120deg, #08101b, #0a1220 40%, #070b14);
+  animation: drift 16s ease-in-out infinite alternate;
+  filter: saturate(1.05);
+}
+@keyframes drift {
+  0%   { background-position: 0px 0px, 0px 0px, 0 0; }
+  100% { background-position: -120px -80px, 80px 40px, 0 0; }
+}
+
+/* particles */
 .bgfx-canvas {
   position: fixed;
   inset: 0;
