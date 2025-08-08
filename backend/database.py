@@ -26,7 +26,7 @@ class Detection(Base):
 # 5. Create the table in the database
 def init_db():
     Base.metadata.create_all(bind=engine)
-    print("✅ Database tables created.")
+    print(" Database tables created.")
 
 # Only run if this file is executed directly
 if __name__ == "__main__":
