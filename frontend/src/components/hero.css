@@ -1,0 +1,22 @@
+.hero { position: relative; z-index: 1; padding-top: 28px; }
+.hero-wrap { text-align: center; }
+.badge {
+  width: 48px; height: 48px; line-height: 48px; margin: 0 auto 8px;
+  border-radius: 50%; background: #0f1f33; border: 1px solid #143a5c;
+}
+.hero-title {
+  margin: 0 0 8px;
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.hero-title span {
+  background: linear-gradient(90deg, #3ea0ff 0%, #21f7a7 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-tag { color: #b8c9db; max-width: 840px; margin: 8px auto 20px; line-height: 1.6; }
+.hero-image {
+  border-radius: 16px; overflow: hidden; border: 1px solid #15314f;
+  box-shadow: 0 20px 60px rgba(0,0,0,.35) inset;
+}
+.hero-image img { width: 100%; display: block; }

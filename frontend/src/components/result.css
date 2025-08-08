@@ -1,0 +1,15 @@
+.result { margin: 20px 0; position: relative; z-index: 1; }
+.panels {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  background: #0c1522; border: 1px solid #123252; border-radius: 14px; padding: 16px;
+}
+.muted { color: #98aeca; }
+.json {
+  background: #0a111b; border: 1px solid #12263f; border-radius: 10px;
+  padding: 12px; color: #d8e6ff; overflow: auto; max-height: 360px;
+}
+.image {
+  width: 100%; height: auto; border: 1px solid #133455; border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.35);
+}
+@media (max-width: 900px) { .panels { grid-template-columns: 1fr; } }

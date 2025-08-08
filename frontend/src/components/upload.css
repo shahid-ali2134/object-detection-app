@@ -1,0 +1,28 @@
+.upload { margin: 26px 0; position: relative; z-index: 1; }
+.drop {
+  border: 2px dashed #295b92; border-radius: 16px; padding: 28px;
+  text-align: center; background: #0b1422; transition: border-color .2s, background .2s, transform .2s;
+  box-shadow: 0 8px 32px rgba(0,0,0,.25);
+}
+.drop.drag { border-color: #6cc7ff; background: #0d1a2a; transform: translateY(-1px); }
+.icon { font-size: 28px; margin-bottom: 10px; }
+.title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+.sub { color: #93a8bf; }
+.small { font-size: 12px; }
+
+.ghost {
+  margin-top: 14px; background: transparent; color: #7ecbff;
+  border: 1px dashed #2c6aa8; padding: 8px 12px; border-radius: 10px; cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.ghost:hover { transform: translateY(-1px); border-color: #52b8ff; box-shadow: 0 6px 14px rgba(0, 170, 255, .25); }
+
+.primary {
+  display: inline-block; margin-left: 10px; margin-top: 14px; cursor: pointer;
+  background: linear-gradient(90deg, #2dd4bf, #22d3ee);
+  color: #00283b; border: 0; padding: 10px 16px; border-radius: 12px; font-weight: 800;
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+.primary:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(34, 211, 238, .35); filter: saturate(1.15); }
+
+.error { color: #ff9ca6; margin-top: 10px; }
