@@ -17,9 +17,15 @@ export default function UploadBox({ onUpload }) {
   const go = async () => {
     if (!file || !onUpload) return;
     setBusy(true); setError("");
-    try { await onUpload(file); setFile(null); if (inputRef.current) inputRef.current.value = ""; }
-    catch (e) { setError(e.message || "Upload failed"); }
-    finally { setBusy(false); }
+    try {
+      await onUpload(file);
+      setFile(null);
+      if (inputRef.current) inputRef.current.value = "";
+    } catch (e) {
+      setError(e.message || "Upload failed");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -29,6 +35,10 @@ export default function UploadBox({ onUpload }) {
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
+        onClick={(e) => {
+          // if you click inside but not on a button, open file picker
+          if (!e.target.closest("button")) inputRef.current?.click();
+        }}
       >
         <div className="icon">⬆️</div>
         <div className="title">Upload Image</div>
