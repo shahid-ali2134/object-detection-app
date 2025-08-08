@@ -7,8 +7,7 @@ export default function Hero() {
       <div className="hero-wrap">
         <div className="title-row">
           <div className="badge pulse">
-            {/* replace /brain.png with your own icon file in /public if you like */}
-            <img src="/brain.png" alt="AI" />
+            <img src="/brain.jpeg" alt="AI" />
           </div>
           <h1 className="hero-title">
             <span>AI Object Detection</span>
@@ -21,7 +20,6 @@ export default function Hero() {
         </p>
 
         <div className="hero-image">
-          {/* hero banner at the top (put your file at /public/hero.jpg) */}
           <img src="/hero.jpg" alt="AI visualization" />
         </div>
       </div>
