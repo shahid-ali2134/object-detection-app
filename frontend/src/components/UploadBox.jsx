@@ -36,7 +36,6 @@ export default function UploadBox({ onUpload }) {
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onClick={(e) => {
-          // if you click inside but not on a button, open file picker
           if (!e.target.closest("button")) inputRef.current?.click();
         }}
       >
